@@ -3,22 +3,21 @@ from DatasetRead import DatasetLoad
 from feature_extraction import FeatureExtraction
 import numpy as np
 from data_analysis import DataAnalysis
-from keras.layers.embeddings import Embedding
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder
 import models
 import pickle
 import csv
-import save_images as sv
+#import save_images as sv
 
 GLOVE_DIR = "/home/amraw/my_repository/Machine-Learning-Projects/Fake_News/gloVe"
 PREDICTIONS_FILE = '../prediction/predicted_test_bog.csv'
 TEST_FILE = '../fnc-1-master/test_stances.csv'
 OBJECT_DUMP = '../objects'
-IMAGES_PATH = '../figures/bog'
+IMAGES_PATH = '../figures/bow'
 
 ## Feature Extraction code ##
 fexc = FeatureExtraction()
@@ -103,7 +102,7 @@ print('Found %s word vectors.' % len(embeddings_index))
 embedding_matrix = models.get_embedding_matrix(embedding_dim=EMBEDDING_DIM, embeddings_index=embeddings_index,
                                                word_index=word_index)
 
-fake_nn = models.bog_model(headline_length=MAX_HEADLINE_LENGTH, body_length=MAX_BODY_LENGTH,
+fake_nn = models.bow_model(headline_length=MAX_HEADLINE_LENGTH, body_length=MAX_BODY_LENGTH,
                            embedding_dim=EMBEDDING_DIM, word_index=word_index, embedding_matrix=embedding_matrix,
                            activation='relu',
                            drop_out=0.2, numb_layers=100)
@@ -114,20 +113,20 @@ bst_model_path = 'Fake_news_nlp.h5'
 model_checkpoint = ModelCheckpoint(bst_model_path, save_best_only=True, save_weights_only=True)
 
 fake_hist = fake_nn.fit([train_headlines_final, train_bodies_final], train_stances_final, batch_size=100,
-                        epochs=40, shuffle=True, validation_data=([headlines_val, bodies_val], stances_val),
+                        epochs=50, shuffle=True, validation_data=([headlines_val, bodies_val], stances_val),
                         callbacks=[early_stopping, model_checkpoint])
 
 print(fake_hist.history.keys())
 bog_list_data = []
 
-with open(os.path.join(OBJECT_DUMP, 'bog_history'), 'wb') as bog_hist:
+with open(os.path.join(OBJECT_DUMP, 'bow_history'), 'wb') as bog_hist:
     bog_list_data.append(fake_hist.history['acc'])
     bog_list_data.append(fake_hist.history['val_acc'])
     bog_list_data.append(fake_hist.history['loss'])
     bog_list_data.append(fake_hist.history['val_loss'])
     pickle.dump(bog_list_data, bog_hist)
 
-sv.save_plt_images(fake_hist, IMAGES_PATH)
+#sv.save_plt_images(fake_hist, IMAGES_PATH)
 
 result = fake_nn.predict([test_headlines_seq, test_bodies_seq], batch_size=100)
 #result = np.random.randint(low=0, high=1, size=(len(test_bodies_seq), 4))

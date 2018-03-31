@@ -63,7 +63,7 @@ def lstm_model(headline_length, body_length, embedding_dim, word_index, embeddin
     fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 
-def bog_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out):
+def bow_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out):
     headline_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
                                          input_length=headline_length, trainable=False)
 
