@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe241f8a-d093-4a13-b833-f9d0c8dab8d9" name="Default" comment="feature_extraction_file">
-      <change beforePath="" afterPath="$PROJECT_DIR$/gloVe/.test" />
-    </list>
+    <list default="true" id="fe241f8a-d093-4a13-b833-f9d0c8dab8d9" name="Default" comment="feature_extraction_file" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,11 +26,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bi_directional_implimentation.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1110">
+              <caret line="85" column="51" lean-forward="false" selection-start-line="85" selection-start-column="51" selection-end-line="85" selection-end-column="51" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bi_directional_implimentation.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/bi_directional_implimentation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="17" column="80" lean-forward="false" selection-start-line="17" selection-start-column="75" selection-end-line="17" selection-end-column="80" />
+            <state relative-caret-position="330">
+              <caret line="37" column="0" lean-forward="false" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bag_of_words_model.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/bag_of_words_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="17" column="33" lean-forward="false" selection-start-line="17" selection-start-column="23" selection-end-line="17" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -128,6 +146,11 @@
             <path>
               <item name="Fake_News" type="b2602c69:ProjectViewProjectNode" />
               <item name="Fake_News" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Fake_News" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Fake_News" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -278,8 +301,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="10" y="20" width="1372" height="745" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24497394" sideWeight="0.49103138" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24497394" sideWeight="0.49103138" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27948305" sideWeight="0.51749814" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5298869" sideWeight="0.48250186" order="2" side_tool="false" content_ui="tabs" />
@@ -685,26 +709,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1275">
-          <caret line="85" column="51" lean-forward="false" selection-start-line="85" selection-start-column="51" selection-end-line="85" selection-end-column="51" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/bag_of_words_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1185">
-          <caret line="79" column="74" lean-forward="false" selection-start-line="79" selection-start-column="74" selection-end-line="79" selection-end-column="74" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/feature_extraction.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -715,10 +719,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1110">
+          <caret line="85" column="51" lean-forward="false" selection-start-line="85" selection-start-column="51" selection-end-line="85" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/bi_directional_implimentation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="17" column="80" lean-forward="false" selection-start-line="17" selection-start-column="75" selection-end-line="17" selection-end-column="80" />
+        <state relative-caret-position="330">
+          <caret line="37" column="0" lean-forward="false" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bag_of_words_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="17" column="33" lean-forward="false" selection-start-line="17" selection-start-column="23" selection-end-line="17" selection-end-column="33" />
           <folding />
         </state>
       </provider>
