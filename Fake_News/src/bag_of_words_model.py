@@ -24,7 +24,7 @@ fexc = FeatureExtraction()
 
 ## Train Data Load ##
 data = DatasetLoad()
-data.set_path(path='/home/amraw/my_repository/Machine-Learning-Projects/Fake_News/fnc-1-master')
+data.set_path(path='../fnc-1-master')
 train_stance_data = data.get_stance()
 train_bodies_data = data.get_bodies()
 train_headlines, train_bodies, train_stances = data.get_combined_data(train_stance_data, train_bodies_data)
