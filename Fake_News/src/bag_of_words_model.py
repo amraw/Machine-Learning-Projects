@@ -113,7 +113,7 @@ bst_model_path = 'Fake_news_nlp.h5'
 model_checkpoint = ModelCheckpoint(bst_model_path, save_best_only=True, save_weights_only=True)
 
 fake_hist = fake_nn.fit([train_headlines_final, train_bodies_final], train_stances_final, batch_size=100,
-                        epochs=50, shuffle=True, validation_data=([headlines_val, bodies_val], stances_val),
+                        epochs=80, shuffle=True, validation_data=([headlines_val, bodies_val], stances_val),
                         callbacks=[early_stopping, model_checkpoint])
 
 print(fake_hist.history.keys())
