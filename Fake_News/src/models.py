@@ -14,7 +14,7 @@ import numpy as np
 
 def get_embeddings_index(glove_dir):
     embeddings_index = {}
-    with open(os.path.join(glove_dir, 'glove.twitter.27B.100d.txt')) as embedding:
+    with open(os.path.join(glove_dir, 'glove.6B.100d.txt')) as embedding:
         for line in embedding:
             values = line.split()
             word = values[0]
@@ -33,7 +33,7 @@ def get_embedding_matrix(word_index, embedding_dim, embeddings_index):
     return embedding_matrix
 
 
-def lstm_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out):
+def lstm_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
     headline_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
                                          input_length=headline_length, trainable=False)
 
@@ -43,24 +43,29 @@ def lstm_model(headline_length, body_length, embedding_dim, word_index, embeddin
     headline_input = Input(shape=(headline_length,), dtype='int32')
     headline_embedding = headline_embedding_layer(headline_input)
     headline_nor = BatchNormalization()(headline_embedding)
-    headline_lstm = LSTM(225, dropout_U=0.25, dropout_W=0.25, consume_less='gpu')(headline_nor)
+    headline_lstm = LSTM(cells, dropout_U=0.25, dropout_W=0.25)(headline_nor)
 
     body_input = Input(shape=(body_length,), dtype='int32')
     body_embedding = bodies_embedding_layer(body_input)
     body_nor = BatchNormalization()(body_embedding)
-    body_lstm = LSTM(225, dropout_U=0.25, dropout_W=0.25, consume_less='gpu')(body_nor)
+    body_lstm = LSTM(cells, dropout_U=0.25, dropout_W=0.25)(body_nor)
 
     concat = concatenate([headline_lstm, body_lstm])
     normalize = BatchNormalization()(concat)
-    dense = Dense(125, activation='relu')(normalize)
-    dropout = Dropout(0.2)(dense)
-    normalize2 = BatchNormalization()(dropout)
+    dense = Dense(numb_layers, activation=activation)(normalize)
+    dropout = Dropout(drop_out)(dense)
+    dense2 = Dense(numb_layers, activation=activation)(dropout)
+    dropout1 = Dropout(drop_out)(dense2)
+    dense3 = Dense(numb_layers, activation=activation)(dropout1)
+    dropout2 = Dropout(drop_out)(dense3)
+    normalize2 = BatchNormalization()(dropout2)
 
-    preds = Dense(1, activation='softmax')(normalize2)
+    preds = Dense(4, activation='softmax')(normalize2)
 
     fake_nn = Model([headline_input, body_input], outputs=preds)
     print(fake_nn.summary())
     fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+    return fake_nn
 
 
 def bow_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out):
@@ -82,13 +87,13 @@ def bow_model(headline_length, body_length, embedding_dim, word_index, embedding
     concat = concatenate([flatten1, flatten2])
     dense = Dense(numb_layers, activation=activation)(concat)
     dropout = Dropout(drop_out)(dense)
-    dense2 = Dense(numb_layers, activation=activation)(dense)
+    dense2 = Dense(numb_layers, activation=activation)(dropout)
     dropout1 = Dropout(drop_out)(dense2)
     dense3 = Dense(numb_layers, activation=activation)(dropout1)
     dropout2 = Dropout(drop_out)(dense3)
-    nomralize2 = BatchNormalization()(dropout2)
+    normalize2 = BatchNormalization()(dropout2)
     #flatten = Flatten()(nomralize2)
-    preds = Dense(4, activation='softmax')(nomralize2)
+    preds = Dense(4, activation='softmax')(normalize2)
 
     fake_nn = Model([headline_input, body_input], preds)
     print(fake_nn.summary())
