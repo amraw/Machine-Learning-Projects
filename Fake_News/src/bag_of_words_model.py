@@ -2,7 +2,7 @@ import os
 from DatasetRead import DatasetLoad
 from feature_extraction import FeatureExtraction
 import numpy as np
-from data_analysis import DataAnalysis
+#from data_analysis import DataAnalysis
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
@@ -13,7 +13,7 @@ import pickle
 import csv
 #import save_images as sv
 
-GLOVE_DIR = "/home/amraw/my_repository/Machine-Learning-Projects/Fake_News/gloVe"
+GLOVE_DIR = "../gloVe"
 PREDICTIONS_FILE = '../prediction/predicted_test_bog.csv'
 TEST_FILE = '../fnc-1-master/test_stances.csv'
 OBJECT_DUMP = '../objects'
