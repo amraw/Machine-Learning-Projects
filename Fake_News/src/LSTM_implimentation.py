@@ -2,7 +2,7 @@ import os
 from DatasetRead import DatasetLoad
 from feature_extraction import FeatureExtraction
 import numpy as np
-from data_analysis import DataAnalysis
+#from data_analysis import DataAnalysis
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
@@ -61,7 +61,7 @@ test_bodies_cl = fexc.remove_stop_words_list(test_bodies_cl)
 # test_bodies_cl = fexc.perform_stemming_list(test_bodies_cl)
 
 # Data analysis
-DA = DataAnalysis()
+#DA = DataAnalysis()
 # DA.histogramOfStrLength(train_headlines_cl)
 # DA.histogramOfStrLength(train_bodies_cl)
 # DA.histogramOfStrLength(test_headlines_cl)
