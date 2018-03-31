@@ -14,7 +14,7 @@ import numpy as np
 
 def get_embeddings_index(glove_dir):
     embeddings_index = {}
-    with open(os.path.join(glove_dir, 'glove.6B.100d.txt')) as embedding:
+    with open(os.path.join(glove_dir, 'glove.twitter.27B.100d.txt')) as embedding:
         for line in embedding:
             values = line.split()
             word = values[0]
@@ -77,13 +77,18 @@ def bow_model(headline_length, body_length, embedding_dim, word_index, embedding
     body_input = Input(shape=(body_length,), dtype='int32')
     body_embedding = bodies_embedding_layer(body_input)
     body_nor = BatchNormalization()(body_embedding)
-
-    concat = concatenate([headline_nor, body_nor])
+    flatten1 = Flatten()(headline_nor)
+    flatten2 = Flatten()(body_nor)
+    concat = concatenate([flatten1, flatten2])
     dense = Dense(numb_layers, activation=activation)(concat)
     dropout = Dropout(drop_out)(dense)
-    nomralize2 = BatchNormalization()(dropout)
-    flatten = Flatten()(nomralize2)
-    preds = Dense(4, activation='softmax')(flatten)
+    dense2 = Dense(numb_layers, activation=activation)(dense)
+    dropout1 = Dropout(drop_out)(dense2)
+    dense3 = Dense(numb_layers, activation=activation)(dropout1)
+    dropout2 = Dropout(drop_out)(dense3)
+    nomralize2 = BatchNormalization()(dropout2)
+    #flatten = Flatten()(nomralize2)
+    preds = Dense(4, activation='softmax')(nomralize2)
 
     fake_nn = Model([headline_input, body_input], preds)
     print(fake_nn.summary())

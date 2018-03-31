@@ -62,8 +62,8 @@ test_bodies_cl = fexc.remove_stop_words_list(test_bodies_cl)
 # test_headlines_cl = fexc.perform_stemming_list(test_headlines_cl)
 # test_bodies_cl = fexc.perform_stemming_list(test_bodies_cl)
 
-MAX_HEADLINE_LENGTH = 75
-MAX_BODY_LENGTH = 75
+MAX_HEADLINE_LENGTH = 600
+MAX_BODY_LENGTH = 600
 EMBEDDING_DIM = 100
 
 alltext = train_headlines_cl + train_bodies_cl + test_headlines_cl + test_bodies_cl
@@ -105,21 +105,19 @@ embedding_matrix = models.get_embedding_matrix(embedding_dim=EMBEDDING_DIM, embe
 fake_nn = models.bow_model(headline_length=MAX_HEADLINE_LENGTH, body_length=MAX_BODY_LENGTH,
                            embedding_dim=EMBEDDING_DIM, word_index=word_index, embedding_matrix=embedding_matrix,
                            activation='relu',
-                           drop_out=0.2, numb_layers=100)
+                           drop_out=0.5, numb_layers=300)
 
-early_stopping =EarlyStopping(monitor='val_loss', patience=3)
+early_stopping =EarlyStopping(monitor='val_loss', patience=70)
 bst_model_path = 'Fake_news_nlp.h5'
 
 model_checkpoint = ModelCheckpoint(bst_model_path, save_best_only=True, save_weights_only=True)
 
-fake_hist = fake_nn.fit([train_headlines_final, train_bodies_final], train_stances_final, batch_size=100,
-                        epochs=80, shuffle=True, validation_data=([headlines_val, bodies_val], stances_val),
+fake_hist = fake_nn.fit([train_headlines_final, train_bodies_final], train_stances_final, batch_size=50,
+                        epochs=40, shuffle=True, validation_data=([headlines_val, bodies_val], stances_val),
                         callbacks=[early_stopping, model_checkpoint])
 
-print(fake_hist.history.keys())
 bog_list_data = []
-
-with open(os.path.join(OBJECT_DUMP, 'bow_history'), 'wb') as bog_hist:
+with open(os.path.join(OBJECT_DUMP, 'bow_history.txt'), 'wb') as bog_hist:
     bog_list_data.append(fake_hist.history['acc'])
     bog_list_data.append(fake_hist.history['val_acc'])
     bog_list_data.append(fake_hist.history['loss'])
@@ -128,7 +126,7 @@ with open(os.path.join(OBJECT_DUMP, 'bow_history'), 'wb') as bog_hist:
 
 #sv.save_plt_images(fake_hist, IMAGES_PATH)
 
-result = fake_nn.predict([test_headlines_seq, test_bodies_seq], batch_size=100)
+result = fake_nn.predict([test_headlines_seq, test_bodies_seq], batch_size=50)
 #result = np.random.randint(low=0, high=1, size=(len(test_bodies_seq), 4))
 #print(result)
 #print(result.shape)
