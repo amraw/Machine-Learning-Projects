@@ -14,10 +14,11 @@ class Stance(Enum):
 class FeatureExtraction:
 
     def __init__(self):
-        self.word_lemmatize = nlp.WordNetLemmatizer();
+        self.word_lemmatize = nlp.WordNetLemmatizer()
 
     def preprocess_string(self, text):
-        return " ".join(re.findall(r'\w+', text, flags=re.UNICODE)).lower()
+        processed = " ".join(re.findall(r'\w+', text, flags=re.UNICODE)).lower()
+        return self.remove_stop_words_str(processed)
 
     def stem_normalize(self, word):
         return self.word_lemmatize.lemmatize(word).lower()
