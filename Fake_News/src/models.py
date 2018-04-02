@@ -157,3 +157,29 @@ def bi_dir_lstm_model(headline_length, body_length, embedding_dim, word_index, e
     print(fake_nn.summary())
     fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     return fake_nn
+
+
+def lstm_model_2(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
+    embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
+                                input_length=headline_length + body_length, trainable=False)
+
+    input = Input(shape=(headline_length + body_length,), dtype='int32')
+    embedding = embedding_layer(input)
+    nomrmalization_1 = BatchNormalization()(embedding)
+
+    lstm = LSTM(cells, dropout_U=0.25, dropout_W=0.25)(nomrmalization_1)
+
+    normalize = BatchNormalization()(lstm)
+    dense = Dense(numb_layers, activation=activation)(normalize)
+    dropout = Dropout(drop_out)(dense)
+    dense2 = Dense(numb_layers, activation=activation)(dropout)
+    dropout1 = Dropout(drop_out)(dense2)
+    dense3 = Dense(numb_layers, activation=activation)(dropout1)
+    dropout2 = Dropout(drop_out)(dense3)
+    normalize2 = BatchNormalization()(dropout2)
+    preds = Dense(4, activation='softmax')(normalize2)
+
+    fake_nn = Model(input, outputs=preds)
+    print(fake_nn.summary())
+    fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+    return fake_nn
