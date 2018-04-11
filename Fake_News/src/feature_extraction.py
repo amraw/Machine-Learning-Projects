@@ -102,6 +102,12 @@ class FeatureExtraction:
             index = 3
         return index
 
+    def combine_heading_body(self, headlines, bodies):
+        headline_body = []
+        for headline, body in zip(headlines, bodies):
+            headline_body.append(headline +" "+body)
+        return headline_body
+
     def get_bag_words(self, data_list):
         for data in data_list:
             headline = self.preprocess_string(data[0])

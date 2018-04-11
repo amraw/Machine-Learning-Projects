@@ -33,7 +33,6 @@ train_headlines, train_bodies, train_stances = data.get_combined_data(train_stan
 train_headlines_cl = fexc.get_clean_data(train_headlines)
 train_bodies_cl = fexc.get_clean_data(train_bodies)
 train_stances_cl = fexc.get_clean_data(train_stances)
-
 # remove stop words
 train_headlines_cl = fexc.remove_stop_words_list(train_headlines_cl)
 train_bodies_cl = fexc.remove_stop_words_list(train_bodies_cl)
