@@ -16,8 +16,19 @@ class FeatureExtraction:
     def __init__(self):
         self.word_lemmatize = nlp.WordNetLemmatizer()
 
+    def preprocess_string_2(self, text):
+        processed = []
+        token = re.findall(r'\w+', text, flags=re.UNICODE)
+        for tk in token:
+            if not re.search(r'\d', tk) and len(tk) > 1:
+                processed.append(tk)
+        processed = " ".join(processed).lower()
+        return self.remove_stop_words_str(processed)
+
     def preprocess_string(self, text):
         processed = " ".join(re.findall(r'\w+', text, flags=re.UNICODE)).lower()
+        if '.' in processed:
+            print(processed)
         return self.remove_stop_words_str(processed)
 
     def stem_normalize(self, word):
