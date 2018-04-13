@@ -1,8 +1,8 @@
-#import nltk as nlp
+import nltk as nlp
 import numpy as np
 import re
 from sklearn import feature_extraction
-#from nltk.stem.snowball import SnowballStemmer
+from nltk.stem.snowball import SnowballStemmer
 from enum import Enum
 
 class Stance(Enum):
@@ -13,8 +13,8 @@ class Stance(Enum):
 
 class FeatureExtraction:
 
-    """def __init__(self):
-        self.word_lemmatize = nlp.WordNetLemmatizer()"""
+    def __init__(self):
+        self.word_lemmatize = nlp.WordNetLemmatizer()
 
     def preprocess_string_2(self, text):
         processed = []
@@ -31,11 +31,11 @@ class FeatureExtraction:
             print(processed)
         return self.remove_stop_words_str(processed)
 
-    """def stem_normalize(self, word):
-        return self.word_lemmatize.lemmatize(word).lower()"""
+    def stem_normalize(self, word):
+        return self.word_lemmatize.lemmatize(word).lower()
 
-    """def get_tokens(self, text):
-        return [self.stem_normalize(word) for word in nlp.word_tokenize(text)]"""
+    def get_tokens(self, text):
+        return [self.stem_normalize(word) for word in nlp.word_tokenize(text)]
 
     def remove_stop_words(self, token):
         return [word for word in token if word not in feature_extraction.text.ENGLISH_STOP_WORDS]
@@ -52,19 +52,19 @@ class FeatureExtraction:
             new_list.append(new_string)
         return new_list
 
-    """def perform_stemming(self, string):
+    def perform_stemming(self, string):
         stemmer = SnowballStemmer("english")
         token = string.split()
         token = [stemmer.stem(word) for word in token]
-        return " ".join(token)"""
+        return " ".join(token)
 
-    """def perform_stemming_list(self, list):
+    def perform_stemming_list(self, list):
         new_list = []
         for string in list:
             new_string = self.perform_stemming(string)
             new_list.append(new_string)
         print(new_list[0])
-        return new_list"""
+        return new_list
 
     def get_clean_data(self, data_list):
         processed_data = list()
