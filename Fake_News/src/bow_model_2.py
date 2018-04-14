@@ -11,7 +11,17 @@ from sklearn.preprocessing import OneHotEncoder
 import models
 import pickle
 import csv
+import tensorflow as tf
+import keras.backend as K
 #import save_images as sv
+
+
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+
+config = tf.ConfigProto()
+config.gpu_options.allow_growth=True
+sess = tf.Session(config=config)
+K.set_session(sess)
 
 GLOVE_DIR = "../gloVe"
 PREDICTIONS_FILE = '../prediction/predicted_test_bog_2.csv'

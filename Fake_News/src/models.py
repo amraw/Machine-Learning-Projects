@@ -13,6 +13,8 @@ from keras.callbacks import Callback
 from itertools import product
 from functools import partial
 
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+
 
 def get_embeddings_index(glove_dir):
     embeddings_index = {}
