@@ -12,13 +12,13 @@ import keras.backend as K
 from keras.callbacks import Callback
 from itertools import product
 from functools import partial
-
+import io
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 
 def get_embeddings_index(glove_dir):
     embeddings_index = {}
-    with open(os.path.join(glove_dir, 'glove.6B.50d.txt')) as embedding:
+    with io.open(os.path.join(glove_dir, 'glove.6B.50d.txt'), mode='r', encoding='utf8') as embedding:
         for line in embedding:
             values = line.split()
             word = values[0]
