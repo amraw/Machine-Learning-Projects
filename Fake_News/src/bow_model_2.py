@@ -14,6 +14,7 @@ import csv
 import tensorflow as tf
 import keras.backend as K
 import sys
+import io
 #import save_images as sv
 
 
@@ -130,7 +131,7 @@ def run_bow_model_2(body_length, numb_layers):
     model_checkpoint = ModelCheckpoint(bst_model_path, save_best_only=True, save_weights_only=True)
 
     fake_hist = fake_nn.fit([train_data], train_stances_final, batch_size=256,
-                            epochs=15, shuffle=True, validation_data=(val_data, stances_val),
+                            epochs=1, shuffle=True, validation_data=(val_data, stances_val),
                             callbacks=[early_stopping, model_checkpoint])
 
     bog_list_data = []
@@ -148,9 +149,9 @@ def run_bow_model_2(body_length, numb_layers):
     # print(result)
     # print(result.shape)
     result_str = fexc.convert_lable_string(result)
-    with open(TEST_FILE, 'r') as read_file:
+    with io.open(TEST_FILE, mode='r', encoding='utf8') as read_file:
         test_stance = csv.DictReader(read_file)
-        with open(PREDICTIONS_FILE+"_"+str(body_length)+"_"+str(numb_layers)+".csv", 'w') as write_file:
+        with io.open(PREDICTIONS_FILE+"_"+str(body_length)+"_"+str(numb_layers)+".csv", mode='w', encoding='utf8') as write_file:
             writer = csv.DictWriter(write_file, fieldnames=['Headline', 'Body ID', 'Stance'])
             writer.writeheader()
             for sample, prediction in zip(test_stance, result_str):
