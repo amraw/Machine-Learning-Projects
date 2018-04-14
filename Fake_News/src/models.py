@@ -112,11 +112,11 @@ def bow_model_2(headline_length, body_length, embedding_dim, word_index, embeddi
     flatten = Flatten()(normalize2)
     preds = Dense(4, activation='softmax')(flatten)
     fake_nn = Model(input, preds)
-    w_array = np.ones((4, 4))
-    set_weights(w_array)
-    ncce = partial(w_categorical_crossentropy, weights=w_array)
+    #w_array = np.ones((4, 4))
+    #set_weights(w_array)
+    #ncce = partial(w_categorical_crossentropy, weights=w_array)
     print(fake_nn.summary())
-    fake_nn.compile(loss=ncce, optimizer='adam', metrics=['acc'])
+    fake_nn.compile(loss="categorical_crossentropy", optimizer='adam', metrics=['acc'])
     return fake_nn
 
 
