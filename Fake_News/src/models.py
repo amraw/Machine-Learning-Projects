@@ -50,14 +50,74 @@ def w_categorical_crossentropy(y_true, y_pred, weights):
 
 
 def set_weights(weight):
-    weight[0][1] = 1.5
-    weight[0][2] = 1.5
-    weight[0][3] = 1.5
-    weight[1][0] = 1.5
-    weight[2][0] = 1.5
-    weight[3][0] = 1.5
-    weight[1][2] = 1.2
-    weight[2][1] = 1.2
+    #weight[0][1] = 1.2
+    #weight[0][2] = 1.2
+    #weight[0][3] = 1.2
+    weight[1][0] = 1.2
+    weight[2][0] = 1.2
+    weight[3][0] = 1.2
+    #weight[1][2] = 1.2
+    #weight[2][1] = 1.2
+
+
+def bow_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out):
+    headline_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
+                                         input_length=headline_length, trainable=False)
+
+    bodies_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
+                                       input_length=body_length, trainable=False)
+
+    headline_input = Input(shape=(headline_length,), dtype='int32')
+    headline_embedding = headline_embedding_layer(headline_input)
+    headline_nor = BatchNormalization()(headline_embedding)
+
+    body_input = Input(shape=(body_length,), dtype='int32')
+    body_embedding = bodies_embedding_layer(body_input)
+    body_nor = BatchNormalization()(body_embedding)
+    flatten1 = Flatten()(headline_nor)
+    flatten2 = Flatten()(body_nor)
+    concat = concatenate([flatten1, flatten2])
+    dense = Dense(numb_layers, activation=activation)(concat)
+    dropout = Dropout(drop_out)(dense)
+    dense2 = Dense(numb_layers, activation=activation)(dropout)
+    dropout1 = Dropout(drop_out)(dense2)
+    dense3 = Dense(numb_layers, activation=activation)(dropout1)
+    dropout2 = Dropout(drop_out)(dense3)
+    normalize2 = BatchNormalization()(dropout2)
+    #flatten = Flatten()(nomralize2)
+    preds = Dense(4, activation='softmax')(normalize2)
+
+    fake_nn = Model([headline_input, body_input], preds)
+    print(fake_nn.summary())
+    fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+    return fake_nn
+
+
+def bow_model_2(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers,
+                drop_out):
+    embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
+                                input_length=headline_length+body_length, trainable=False)
+
+    input = Input(shape=(headline_length+body_length,), dtype='int32')
+    embedding = embedding_layer(input)
+    #nomrmalization_1 = BatchNormalization()(embedding)
+
+    dense = Dense(numb_layers, activation=activation)(embedding)
+    dropout = Dropout(drop_out)(dense)
+    #dense2 = Dense(numb_layers, activation=activation)(dropout)
+    #dropout1 = Dropout(drop_out)(dense2)
+    #dense3 = Dense(numb_layers, activation=activation)(dropout1)
+    #dropout2 = Dropout(drop_out)(dense3)
+    normalize2 = BatchNormalization()(dropout)
+    flatten = Flatten()(normalize2)
+    preds = Dense(4, activation='softmax')(flatten)
+    fake_nn = Model(input, preds)
+    w_array = np.ones((4, 4))
+    set_weights(w_array)
+    ncce = partial(w_categorical_crossentropy, weights=w_array)
+    print(fake_nn.summary())
+    fake_nn.compile(loss=ncce, optimizer='adam', metrics=['acc'])
+    return fake_nn
 
 
 def lstm_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
@@ -94,61 +154,6 @@ def lstm_model(headline_length, body_length, embedding_dim, word_index, embeddin
     fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     return fake_nn
 
-
-def bow_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out):
-    headline_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
-                                         input_length=headline_length, trainable=False)
-
-    bodies_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
-                                       input_length=body_length, trainable=False)
-
-    headline_input = Input(shape=(headline_length,), dtype='int32')
-    headline_embedding = headline_embedding_layer(headline_input)
-    headline_nor = BatchNormalization()(headline_embedding)
-
-    body_input = Input(shape=(body_length,), dtype='int32')
-    body_embedding = bodies_embedding_layer(body_input)
-    body_nor = BatchNormalization()(body_embedding)
-    flatten1 = Flatten()(headline_nor)
-    flatten2 = Flatten()(body_nor)
-    concat = concatenate([flatten1, flatten2])
-    dense = Dense(numb_layers, activation=activation)(concat)
-    dropout = Dropout(drop_out)(dense)
-    dense2 = Dense(numb_layers, activation=activation)(dropout)
-    dropout1 = Dropout(drop_out)(dense2)
-    dense3 = Dense(numb_layers, activation=activation)(dropout1)
-    dropout2 = Dropout(drop_out)(dense3)
-    normalize2 = BatchNormalization()(dropout2)
-    #flatten = Flatten()(nomralize2)
-    preds = Dense(4, activation='softmax')(normalize2)
-
-    fake_nn = Model([headline_input, body_input], preds)
-    print(fake_nn.summary())
-    fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-    return fake_nn
-
-
-def bow_model_2(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out):
-    embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
-                                         input_length=headline_length+body_length, trainable=False)
-
-    input = Input(shape=(headline_length+body_length,), dtype='int32')
-    embedding = embedding_layer(input)
-    nomrmalization_1 = BatchNormalization()(embedding)
-
-    dense = Dense(numb_layers, activation=activation)(nomrmalization_1)
-    dropout = Dropout(drop_out)(dense)
-    dense2 = Dense(numb_layers, activation=activation)(dropout)
-    dropout1 = Dropout(drop_out)(dense2)
-    dense3 = Dense(numb_layers, activation=activation)(dropout1)
-    dropout2 = Dropout(drop_out)(dense3)
-    normalize2 = BatchNormalization()(dropout2)
-    flatten = Flatten()(normalize2)
-    preds = Dense(4, activation='softmax')(flatten)
-    fake_nn = Model(input, preds)
-    print(fake_nn.summary())
-    fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-    return fake_nn
 
 def bi_dir_lstm_model(headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
     headline_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],

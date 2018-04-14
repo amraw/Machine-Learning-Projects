@@ -124,7 +124,7 @@ embedding_matrix = models.get_embedding_matrix(embedding_dim=EMBEDDING_DIM, embe
 fake_nn = models.bow_model_2(headline_length=MAX_HEADLINE_LENGTH, body_length=MAX_BODY_LENGTH,
                              embedding_dim=EMBEDDING_DIM, word_index=word_index, embedding_matrix=embedding_matrix,
                              activation='relu',
-                             drop_out=0.5, numb_layers=300)
+                             drop_out=0.5, numb_layers=100)
 
 early_stopping =EarlyStopping(monitor='val_loss', patience=10)
 bst_model_path = 'Fake_news_nlp.h5'
