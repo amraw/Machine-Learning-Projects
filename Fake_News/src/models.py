@@ -54,8 +54,8 @@ def set_weights(weight):
     #weight[0][2] = 1.2
     #weight[0][3] = 1.2
     weight[1][0] = 1.2
-    weight[2][0] = 1.2
-    weight[3][0] = 1.2
+    weight[2][0] = 3
+    weight[3][0] = 3
     #weight[1][2] = 1.2
     #weight[2][1] = 1.2
 
@@ -214,7 +214,7 @@ def lstm_model_2(headline_length, body_length, embedding_dim, word_index, embedd
     ncce = partial(w_categorical_crossentropy, weights=w_array)
     fake_nn = Model(input, outputs=preds)
     print(fake_nn.summary())
-    fake_nn.compile(loss=ncce, optimizer='adam', metrics=['acc'])
+    fake_nn.compile(loss="categorical_crossentropy", optimizer='adam', metrics=['acc'])
     return fake_nn
 
 
