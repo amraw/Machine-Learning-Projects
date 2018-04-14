@@ -63,7 +63,7 @@ test_bodies_cl = fexc.remove_stop_words_list(test_bodies_cl)
 
 MAX_HEADLINE_LENGTH = 50
 MAX_BODY_LENGTH = 200
-EMBEDDING_DIM = 100
+EMBEDDING_DIM = 50
 
 alltext = train_headlines_cl + train_bodies_cl + test_headlines_cl + test_bodies_cl
 token = Tokenizer(num_words=30000)
@@ -116,13 +116,13 @@ fake_nn = models.bow_model_2(headline_length=MAX_HEADLINE_LENGTH, body_length=MA
                              activation='relu',
                              drop_out=0.5, numb_layers=300)
 
-early_stopping =EarlyStopping(monitor='val_loss', patience=70)
+early_stopping =EarlyStopping(monitor='val_loss', patience=10)
 bst_model_path = 'Fake_news_nlp.h5'
 
 model_checkpoint = ModelCheckpoint(bst_model_path, save_best_only=True, save_weights_only=True)
 
-fake_hist = fake_nn.fit([train_data], train_stances_final, batch_size=128,
-                        epochs=40, shuffle=True, validation_data=(val_data, stances_val),
+fake_hist = fake_nn.fit([train_data], train_stances_final, batch_size=256,
+                        epochs=25, shuffle=True, validation_data=(val_data, stances_val),
                         callbacks=[early_stopping, model_checkpoint])
 
 bog_list_data = []
@@ -135,7 +135,7 @@ with open(os.path.join(OBJECT_DUMP, 'bow_history.txt'), 'wb') as bog_hist:
 
 #sv.save_plt_images(fake_hist, IMAGES_PATH)
 
-result = fake_nn.predict(train_data, batch_size=128)
+result = fake_nn.predict(train_data, batch_size=256)
 #result = np.random.randint(low=0, high=1, size=(len(test_bodies_seq), 4))
 #print(result)
 #print(result.shape)
