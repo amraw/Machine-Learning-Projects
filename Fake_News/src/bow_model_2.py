@@ -134,17 +134,17 @@ def run_bow_model_2(body_length, numb_layers):
                             epochs=1, shuffle=True, validation_data=(val_data, stances_val),
                             callbacks=[early_stopping, model_checkpoint])
 
-    bog_list_data = []
-    with open(os.path.join(OBJECT_DUMP, "bow_"+str(body_length)+"_"+str(numb_layers)+".txt"), 'wb') as bog_hist:
-        bog_list_data.append(fake_hist.history['acc'])
-        bog_list_data.append(fake_hist.history['val_acc'])
-        bog_list_data.append(fake_hist.history['loss'])
-        bog_list_data.append(fake_hist.history['val_loss'])
-        pickle.dump(bog_list_data, bog_hist)
+    bow_list_data = []
+    with open(os.path.join(OBJECT_DUMP, "bow_"+str(body_length)+"_"+str(numb_layers)+".txt"), 'wb') as bow_hist:
+        bow_list_data.append(fake_hist.history['acc'])
+        bow_list_data.append(fake_hist.history['val_acc'])
+        bow_list_data.append(fake_hist.history['loss'])
+        bow_list_data.append(fake_hist.history['val_loss'])
+        pickle.dump(bow_list_data, bow_hist)
 
     # sv.save_plt_images(fake_hist, IMAGES_PATH)
 
-    result = fake_nn.predict(train_data, batch_size=256)
+    result = fake_nn.predict(test_data, batch_size=256)
     # result = np.random.randint(low=0, high=1, size=(len(test_bodies_seq), 4))
     # print(result)
     # print(result.shape)
