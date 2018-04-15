@@ -216,7 +216,9 @@ def lstm_model_2(headline_length, body_length, embedding_dim, word_index, embedd
     fake_nn.compile(loss="categorical_crossentropy", optimizer='adam', metrics=['acc'])
     return fake_nn
 
-def bi_dir_lstm_model_2(max_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
+
+def bi_dir_lstm_model_2(max_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out,
+                        cells):
     embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
                                 input_length=max_length, trainable=False)
 
@@ -235,7 +237,7 @@ def bi_dir_lstm_model_2(max_length, embedding_dim, word_index, embedding_matrix,
 
     preds = Dense(4, activation='softmax')(normalize2)
 
-    fake_nn = Model(normalize2, outputs=preds)
+    fake_nn = Model(input, outputs=preds)
     print(fake_nn.summary())
     fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     return fake_nn
