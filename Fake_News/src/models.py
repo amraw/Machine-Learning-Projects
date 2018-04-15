@@ -107,10 +107,11 @@ def bow_model_2(headline_length, body_length, embedding_dim, word_index, embeddi
     normalize1 = BatchNormalization()(dropout)
     dense2 = Dense(numb_layers, activation=activation)(normalize1)
     dropout1 = Dropout(drop_out)(dense2)
-    #dense3 = Dense(numb_layers, activation=activation)(dropout1)
-    #dropout2 = Dropout(drop_out)(dense3)
     normalize2 = BatchNormalization()(dropout1)
-    flatten = Flatten()(normalize2)
+    dense3 = Dense(numb_layers, activation=activation)(normalize2)
+    dropout2 = Dropout(drop_out)(dense3)
+    normalize3 = BatchNormalization()(dropout2)
+    flatten = Flatten()(normalize3)
     preds = Dense(4, activation='softmax')(flatten)
     fake_nn = Model(input, preds)
     #w_array = np.ones((4, 4))
@@ -166,22 +167,22 @@ def bi_dir_lstm_model(headline_length, body_length, embedding_dim, word_index, e
     headline_input = Input(shape=(headline_length,), dtype='int32')
     headline_embedding = headline_embedding_layer(headline_input)
     headline_nor = BatchNormalization()(headline_embedding)
-    head_bi_dir = Bidirectional(LSTM(cells, dropout_U=0.25, dropout_W=0.25))(headline_nor)
+    head_bi_dir = Bidirectional(LSTM(cells))(headline_nor)
 
     body_input = Input(shape=(body_length,), dtype='int32')
     body_embedding = bodies_embedding_layer(body_input)
     body_nor = BatchNormalization()(body_embedding)
-    body_bi_dir = Bidirectional(LSTM(cells, dropout_U=0.25, dropout_W=0.25))(body_nor)
+    body_bi_dir = Bidirectional(LSTM(cells))(body_nor)
 
     concat = concatenate([head_bi_dir, body_bi_dir])
     normalize = BatchNormalization()(concat)
     dense = Dense(numb_layers, activation=activation)(normalize)
     dropout = Dropout(drop_out)(dense)
-    dense2 = Dense(numb_layers, activation=activation)(dropout)
-    dropout1 = Dropout(drop_out)(dense2)
-    dense3 = Dense(numb_layers, activation=activation)(dropout1)
-    dropout2 = Dropout(drop_out)(dense3)
-    normalize2 = BatchNormalization()(dropout2)
+    #dense2 = Dense(numb_layers, activation=activation)(dropout)
+    #dropout1 = Dropout(drop_out)(dense2)
+    #dense3 = Dense(numb_layers, activation=activation)(dropout1)
+    #dropout2 = Dropout(drop_out)(dense3)
+    normalize2 = BatchNormalization()(dropout)
 
     preds = Dense(4, activation='softmax')(normalize2)
 
@@ -213,6 +214,30 @@ def lstm_model_2(headline_length, body_length, embedding_dim, word_index, embedd
     fake_nn = Model(input, outputs=preds)
     print(fake_nn.summary())
     fake_nn.compile(loss="categorical_crossentropy", optimizer='adam', metrics=['acc'])
+    return fake_nn
+
+def bi_dir_lstm_model_2(max_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
+    embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
+                                input_length=max_length, trainable=False)
+
+    input = Input(shape=(max_length,), dtype='int32')
+    embedding = embedding_layer(input)
+    bi_lstm = Bidirectional(LSTM(cells))(embedding)
+
+    normalize = BatchNormalization()(bi_lstm)
+    dense = Dense(numb_layers, activation=activation)(normalize)
+    dropout = Dropout(drop_out)(dense)
+    #dense2 = Dense(numb_layers, activation=activation)(dropout)
+    #dropout1 = Dropout(drop_out)(dense2)
+    #dense3 = Dense(numb_layers, activation=activation)(dropout1)
+    #dropout2 = Dropout(drop_out)(dense3)
+    normalize2 = BatchNormalization()(dropout)
+
+    preds = Dense(4, activation='softmax')(normalize2)
+
+    fake_nn = Model(normalize2, outputs=preds)
+    print(fake_nn.summary())
+    fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     return fake_nn
 
 
