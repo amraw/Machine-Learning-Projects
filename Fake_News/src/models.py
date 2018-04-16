@@ -175,14 +175,14 @@ def bi_dir_lstm_model(headline_length, body_length, embedding_dim, word_index, e
     body_bi_dir = Bidirectional(LSTM(cells))(body_nor)
 
     concat = concatenate([head_bi_dir, body_bi_dir])
-    normalize = BatchNormalization()(concat)
-    dense = Dense(numb_layers, activation=activation)(normalize)
-    dropout = Dropout(drop_out)(dense)
+    #normalize = BatchNormalization()(concat)
+    #dense = Dense(numb_layers, activation=activation)(normalize)
+    #dropout = Dropout(drop_out)(dense)
     #dense2 = Dense(numb_layers, activation=activation)(dropout)
     #dropout1 = Dropout(drop_out)(dense2)
     #dense3 = Dense(numb_layers, activation=activation)(dropout1)
     #dropout2 = Dropout(drop_out)(dense3)
-    normalize2 = BatchNormalization()(dropout)
+    normalize2 = BatchNormalization()(concat)
 
     preds = Dense(4, activation='softmax')(normalize2)
 
@@ -227,13 +227,13 @@ def bi_dir_lstm_model_2(max_length, embedding_dim, word_index, embedding_matrix,
     bi_lstm = Bidirectional(LSTM(cells))(embedding)
 
     normalize = BatchNormalization()(bi_lstm)
-    dense = Dense(numb_layers, activation=activation)(normalize)
-    dropout = Dropout(drop_out)(dense)
+    #dense = Dense(numb_layers, activation=activation)(normalize)
+    #dropout = Dropout(drop_out)(dense)
     #dense2 = Dense(numb_layers, activation=activation)(dropout)
     #dropout1 = Dropout(drop_out)(dense2)
     #dense3 = Dense(numb_layers, activation=activation)(dropout1)
     #dropout2 = Dropout(drop_out)(dense3)
-    normalize2 = BatchNormalization()(dropout)
+    normalize2 = BatchNormalization()(bi_lstm)
 
     preds = Dense(4, activation='softmax')(normalize2)
 
