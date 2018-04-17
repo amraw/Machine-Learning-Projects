@@ -266,6 +266,43 @@ def bow_model_3(max_length, embedding_dim, word_index, embedding_matrix, activat
     return fake_nn
 
 
+def bi_dir_lstm_model_3(globel_vectors, headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
+    headline_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
+                                         input_length=headline_length, trainable=False)
+
+    bodies_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
+                                       input_length=body_length, trainable=False)
+
+    headline_input = Input(shape=(headline_length,), dtype='int32')
+    headline_embedding = headline_embedding_layer(headline_input)
+    headline_nor = BatchNormalization()(headline_embedding)
+    head_bi_dir = Bidirectional(LSTM(cells))(headline_nor)
+
+    body_input = Input(shape=(body_length,), dtype='int32')
+    body_embedding = bodies_embedding_layer(body_input)
+    body_nor = BatchNormalization()(body_embedding)
+    body_bi_dir = Bidirectional(LSTM(cells))(body_nor)
+
+    global_vector_input = Input(shape=(globel_vectors,), dtype='float32')
+
+
+    concat = concatenate([head_bi_dir, body_bi_dir, global_vector_input])
+    #normalize = BatchNormalization()(concat)
+    #dense = Dense(numb_layers, activation=activation)(normalize)
+    #dropout = Dropout(drop_out)(dense)
+    #dense2 = Dense(numb_layers, activation=activation)(dropout)
+    #dropout1 = Dropout(drop_out)(dense2)
+    #dense3 = Dense(numb_layers, activation=activation)(dropout1)
+    #dropout2 = Dropout(drop_out)(dense3)
+    normalize2 = BatchNormalization()(concat)
+
+    preds = Dense(4, activation='softmax')(normalize2)
+
+    fake_nn = Model([headline_input, body_input, global_vector_input], outputs=preds)
+    print(fake_nn.summary())
+    fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+    return fake_nn
+
 class MetricsCallback(Callback):
     def __init__(self, train_data, validation_data):
         super().__init__()
