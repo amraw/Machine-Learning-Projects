@@ -99,11 +99,13 @@ def polarity_features(headlines, bodies):
         'fraud',
         'hoax',
         'false',
-        'deny', 'denies',
+        'deny',
+        'denies',
         'not',
         'despite',
         'nope',
-        'doubt', 'doubts',
+        'doubt',
+        'doubts',
         'bogus',
         'debunk',
         'pranks',
@@ -130,7 +132,8 @@ def discuss_features(headlines, bodies):
         'maybe',
         'reporting',
         'reports',
-        'say', 'says',
+        'say',
+        'says',
         'claim',
         'claims',
         'purportedly',
@@ -280,6 +283,7 @@ def get_tffreq_vec(alltext, lim_unigram):
     bow = bow_vectorizer.fit_transform(alltext)  # Train set only
     return TfidfTransformer(use_idf=False).fit(bow)
 
+
 def get_headline_body_vec(name,headlines, bodies, tfidf_vec):
     feature_vec = []
     file_name = "../features/head_body_vec." + name + ".npy"
@@ -304,7 +308,7 @@ def get_headline_body_vec(name,headlines, bodies, tfidf_vec):
             feature_vec.append(feat_vec)
         np.save(file_name, feature_vec)
 
-        return np.load(file_name)
+    return np.load(file_name)
 
 
 
