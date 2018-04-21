@@ -27,7 +27,7 @@ sess = tf.Session(config=config)
 K.set_session(sess)
 
 GLOVE_DIR = "../gloVe"
-PREDICTIONS_FILE = '../prediction/bi_lstm_glo_feat'
+PREDICTIONS_FILE = '../prediction/bi_lstm_glo_feat_vec'
 TEST_FILE = '../fnc-1-master/test_stances.csv'
 OBJECT_DUMP = '../objects'
 IMAGES_PATH = '../figures/bow'
@@ -142,7 +142,7 @@ def run_bi_dir_tf_idf_feature(body_length=0, numb_layers=0):
                             val_headline_cl_vec], stances_val), callbacks=[early_stopping, model_checkpoint])
 
     bi_list_glov_data = []
-    with open(os.path.join(OBJECT_DUMP, "bi_lstm_glov_" + str(body_length) + "_" + str(numb_layers) + ".txt"),
+    with open(os.path.join(OBJECT_DUMP, "bi_lstm_glov_vec" + str(body_length) + "_" + str(numb_layers) + ".txt"),
               'wb') as bi_lstm_glov:
         bi_list_glov_data.append(fake_hist.history['acc'])
         bi_list_glov_data.append(fake_hist.history['val_acc'])
