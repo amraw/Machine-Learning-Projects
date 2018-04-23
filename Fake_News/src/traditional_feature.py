@@ -325,7 +325,7 @@ def get_headline_body_vec(name, headlines, bodies, global_feats, bow_vectorizer,
             data.append(feat_vec)
             index += 1
         np.save(filename, data)
-        data = np.load(filename)
+    data = np.load(filename)
     return data
 
 
