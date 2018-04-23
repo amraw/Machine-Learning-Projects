@@ -288,8 +288,8 @@ def bi_dir_lstm_model_3(globel_vectors, headline_length, body_length, embedding_
 
     concat = concatenate([head_bi_dir, body_bi_dir, global_vector_input])
     #normalize = BatchNormalization()(concat)
-    #dense = Dense(numb_layers, activation=activation)(normalize)
-    #dropout = Dropout(drop_out)(dense)
+
+
     #dense2 = Dense(numb_layers, activation=activation)(dropout)
     #dropout1 = Dropout(drop_out)(dense2)
     #dense3 = Dense(numb_layers, activation=activation)(dropout1)
@@ -304,7 +304,7 @@ def bi_dir_lstm_model_3(globel_vectors, headline_length, body_length, embedding_
     return fake_nn
 
 
-def bi_feature_tf_idf(headline_body_vec, globel_vectors, headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
+def bi_feature_tf_idf(headline_body_vec, headline_length, body_length, embedding_dim, word_index, embedding_matrix, activation, numb_layers, drop_out, cells):
     headline_embedding_layer = Embedding(len(word_index) + 1, embedding_dim, weights=[embedding_matrix],
                                          input_length=headline_length, trainable=False)
 
@@ -321,11 +321,9 @@ def bi_feature_tf_idf(headline_body_vec, globel_vectors, headline_length, body_l
     body_nor = BatchNormalization()(body_embedding)
     body_bi_dir = Bidirectional(LSTM(cells))(body_nor)
 
-    global_vector_input = Input(shape=(globel_vectors,), dtype='float32')
-
     headline_body_vec_input = Input(shape=(headline_body_vec,), dtype='float32')
 
-    concat = concatenate([head_bi_dir, body_bi_dir, global_vector_input, headline_body_vec_input])
+    concat = concatenate([head_bi_dir, body_bi_dir, headline_body_vec_input])
     #normalize = BatchNormalization()(concat)
     #dense = Dense(numb_layers, activation=activation)(normalize)
     #dropout = Dropout(drop_out)(dense)
@@ -337,7 +335,7 @@ def bi_feature_tf_idf(headline_body_vec, globel_vectors, headline_length, body_l
 
     preds = Dense(4, activation='softmax')(normalize2)
 
-    fake_nn = Model([headline_input, body_input, global_vector_input, headline_body_vec_input], outputs=preds)
+    fake_nn = Model([headline_input, body_input, headline_body_vec_input], outputs=preds)
     print(fake_nn.summary())
     fake_nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     return fake_nn
