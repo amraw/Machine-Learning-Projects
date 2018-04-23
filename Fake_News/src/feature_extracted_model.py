@@ -78,10 +78,10 @@ def run_bi_glob_model_2(body_length=0, numb_layers=0):
                                             tfidf_vec)
     test_global_feature = get_all_features('test', test_headlines, test_headlines_cl, test_bodies, test_bodies_cl,
                                            tfidf_vec)
-    #get_headline_body_vec('train', train_headlines_cl, train_bodies, get_tfidf_vec(train_headlines_cl+train_bodies_cl+test_headlines_cl+test_bodies_cl, lim_unigram=1000))
-    #get_headline_body_vec('test', test_headlines_cl, test_bodies,
-    #                      get_tfidf_vec(train_headlines_cl + train_bodies_cl + test_headlines_cl + test_bodies_cl,
-    #                                    lim_unigram=1000))
+    get_headline_body_vec('train', train_headlines_cl, train_bodies, get_tfidf_vec(train_headlines_cl+train_bodies_cl+test_headlines_cl+test_bodies_cl, lim_unigram=1000))
+    get_headline_body_vec('test', test_headlines_cl, test_bodies,
+                          get_tfidf_vec(train_headlines_cl + train_bodies_cl + test_headlines_cl + test_bodies_cl,
+                                        lim_unigram=1000))
     global_feature_length = train_global_feature.shape[1]
 
 
