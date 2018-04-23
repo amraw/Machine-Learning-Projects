@@ -4,10 +4,14 @@ import re
 from sklearn import feature_extraction
 from nltk.stem.snowball import SnowballStemmer
 from enum import Enum
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 class Stance(Enum):
-    agree = 0
-    unrelated = 1
+    unrelated = 0
+    agree = 1
     discuss = 2
     disagree = 3
 
