@@ -284,7 +284,7 @@ def get_tffreq_vec(alltext, lim_unigram):
     return TfidfTransformer(use_idf=False).fit(bow)
 
 
-def get_headline_body_vec(name,headlines, bodies, tfidf_vec):
+def get_headline_body_vec_2(name,headlines, bodies, tfidf_vec):
     feature_vec = []
     file_name = "../features/head_body_vec." + name + ".npy"
     if not os.path.isfile(file_name):
@@ -311,6 +311,30 @@ def get_headline_body_vec(name,headlines, bodies, tfidf_vec):
     return np.load(file_name)
 
 
+def get_headline_body_vec(name, headlines, bodies, global_feats, bow_vectorizer, tfreq_vectorizer):
+    data = []
+    filename = "../features/headline_body_vec." + name + ".npy"
+    if not os.path.isfile(filename):
+        index = 0
+        for headline, body, glob_feat in tqdm(zip(headlines, bodies, global_feats)):
+            head_bow = bow_vectorizer.transform([headline]).toarray()
+            head_tf = tfreq_vectorizer.transform(head_bow).toarray()[0].reshape(1, -1)
+            body_bow = bow_vectorizer.transform([body]).toarray()
+            body_tf = tfreq_vectorizer.transform(body_bow).toarray()[0].reshape(1, -1)
+            feat_vec = np.squeeze(np.c_[head_tf, body_tf, glob_feat.reshape(1,-1)])
+            data.append(feat_vec)
+            index += 1
+        np.save(filename, data)
+        data = np.load(filename)
+    return data
+
+
+def get_tfreq_vectorizer(headline, bodies, lim_unigram):
+    bow_vectorizer = CountVectorizer(max_features=lim_unigram)
+    bow = bow_vectorizer.fit_transform(headline + bodies)  # Train set only
+
+    tfreq_vectorizer = TfidfTransformer(use_idf=False).fit(bow)
+    return bow_vectorizer, tfreq_vectorizer
 
 
 

@@ -1,7 +1,7 @@
 import os
 from DatasetRead import DatasetLoad
 from feature_extraction import FeatureExtraction
-from traditional_feature import get_all_features, get_tfidf_vec, get_tffreq_vec, get_headline_body_vec
+from traditional_feature import get_all_features, get_tfidf_vec, get_tfreq_vectorizer, get_headline_body_vec
 import numpy as np
 #from data_analysis import DataAnalysis
 from keras.preprocessing.text import Tokenizer
@@ -74,15 +74,18 @@ def run_bi_dir_tf_idf_feature(body_length=0, numb_layers=0):
     # Get global feature
     tfidf_vec = get_tfidf_vec(train_headlines_cl+train_bodies_cl+test_headlines_cl+test_bodies_cl)
 
+    bow_vectorizer, tfreq_vectorizer = get_tfreq_vectorizer(train_headlines_cl, train_bodies_cl, lim_unigram=5000)
+
     train_global_feature = get_all_features('train', train_headlines, train_headlines_cl, train_bodies, train_bodies_cl,
                                             tfidf_vec)
     test_global_feature = get_all_features('test', test_headlines, test_headlines_cl, test_bodies, test_bodies_cl,
                                            tfidf_vec)
-    train_headline_body_vec = get_headline_body_vec('train', train_headlines_cl, train_bodies, get_tfidf_vec(train_headlines_cl+train_bodies_cl+test_headlines_cl+test_bodies_cl, lim_unigram=1000))
-    test_headline_body_vec = get_headline_body_vec('test', test_headlines_cl, test_bodies,
-                          get_tfidf_vec(train_headlines_cl + train_bodies_cl + test_headlines_cl + test_bodies_cl,
-                                        lim_unigram=1000))
-    global_feature_length = train_global_feature.shape[1]
+
+    train_headline_body_vec = get_headline_body_vec('train', train_headlines_cl, train_bodies_cl, train_global_feature,
+                                                     bow_vectorizer, tfreq_vectorizer)
+    test_headline_body_vec = get_headline_body_vec('test', test_headlines_cl, test_bodies_cl, test_global_feature,
+                                    bow_vectorizer, tfreq_vectorizer)
+    #global_feature_length = train_global_feature.shape[1]
 
     headline_body_vec = train_headline_body_vec.shape[1]
 
@@ -107,9 +110,9 @@ def run_bi_dir_tf_idf_feature(body_length=0, numb_layers=0):
     onehotencoder = OneHotEncoder()
     train_stances_in = onehotencoder.fit_transform(train_stances_in).toarray()
 
-    train_headlines_final, headlines_val, train_bodies_final, bodies_val, train_stances_final, stances_val, \
-    train_global, val_global, final_train_headline_body_vec, val_headline_cl_vec = \
-        train_test_split(train_headlines_seq, train_bodies_seq, train_stances_in, train_global_feature,
+    train_headlines_final, headlines_val, train_bodies_final, bodies_val, train_stances_final, stances_val,\
+    final_train_headline_body_vec, val_headline_body_vec = \
+        train_test_split(train_headlines_seq, train_bodies_seq, train_stances_in,
                          train_headline_body_vec, test_size=0.2, random_state=42)
 
     test_headlines_seq = token.texts_to_sequences(test_headlines_cl)
@@ -127,7 +130,7 @@ def run_bi_dir_tf_idf_feature(body_length=0, numb_layers=0):
     embedding_matrix = models.get_embedding_matrix(embedding_dim=EMBEDDING_DIM, embeddings_index=embeddings_index,
                                                    word_index=word_index)
 
-    fake_nn = models.bi_feature_tf_idf(headline_body_vec=headline_body_vec, globel_vectors = global_feature_length,
+    fake_nn = models.bi_feature_tf_idf(headline_body_vec=headline_body_vec,
                                        headline_length=MAX_HEADLINE_LENGTH, body_length=MAX_BODY_LENGTH,
                                        embedding_dim=EMBEDDING_DIM, word_index=word_index,
                                        embedding_matrix=embedding_matrix, activation='relu', drop_out=0.9,
@@ -137,9 +140,9 @@ def run_bi_dir_tf_idf_feature(body_length=0, numb_layers=0):
     bst_model_path = 'Fake_news_nlp.h5'
     model_checkpoint = ModelCheckpoint(bst_model_path, save_best_only=True, save_weights_only=True)
 
-    fake_hist = fake_nn.fit([train_headlines_final, train_bodies_final, train_global,final_train_headline_body_vec], train_stances_final, batch_size=256,
-                            epochs=1, shuffle=True, validation_data=([headlines_val, bodies_val, val_global,
-                            val_headline_cl_vec], stances_val), callbacks=[early_stopping, model_checkpoint])
+    fake_hist = fake_nn.fit([train_headlines_final, train_bodies_final,final_train_headline_body_vec], train_stances_final, batch_size=256,
+                            epochs=1, shuffle=True, validation_data=([headlines_val, bodies_val,
+                            val_headline_body_vec], stances_val), callbacks=[early_stopping, model_checkpoint])
 
     bi_list_glov_data = []
     with open(os.path.join(OBJECT_DUMP, "bi_lstm_glov_vec" + str(body_length) + "_" + str(numb_layers) + ".txt"),
@@ -150,7 +153,7 @@ def run_bi_dir_tf_idf_feature(body_length=0, numb_layers=0):
         bi_list_glov_data.append(fake_hist.history['val_loss'])
         pickle.dump(bi_list_glov_data, bi_lstm_glov)
 
-    result = fake_nn.predict([test_headlines_seq, test_bodies_seq, test_global_feature, test_headline_body_vec],
+    result = fake_nn.predict([test_headlines_seq, test_bodies_seq, test_headline_body_vec],
                              batch_size=256)
 
     # result = fexc.convert_lable_string(np.zeros((len(test_bodies_data), 1)).flatten())
