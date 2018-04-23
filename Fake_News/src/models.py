@@ -275,12 +275,12 @@ def bi_dir_lstm_model_3(globel_vectors, headline_length, body_length, embedding_
 
     headline_input = Input(shape=(headline_length,), dtype='int32')
     headline_embedding = headline_embedding_layer(headline_input)
-    headline_nor = BatchNormalization()(headline_embedding)
-    head_bi_dir = Bidirectional(LSTM(cells))(headline_nor)
+    #headline_nor = BatchNormalization()(headline_embedding)
+    head_bi_dir = Bidirectional(LSTM(cells))(headline_embedding)
 
     body_input = Input(shape=(body_length,), dtype='int32')
     body_embedding = bodies_embedding_layer(body_input)
-    body_nor = BatchNormalization()(body_embedding)
+    #body_nor = BatchNormalization()(body_embedding)
     body_bi_dir = Bidirectional(LSTM(cells))(body_nor)
 
     global_vector_input = Input(shape=(globel_vectors,), dtype='float32')
@@ -294,9 +294,9 @@ def bi_dir_lstm_model_3(globel_vectors, headline_length, body_length, embedding_
     #dropout1 = Dropout(drop_out)(dense2)
     #dense3 = Dense(numb_layers, activation=activation)(dropout1)
     #dropout2 = Dropout(drop_out)(dense3)
-    normalize2 = BatchNormalization()(concat)
+    #normalize2 = BatchNormalization()(concat)
 
-    preds = Dense(4, activation='softmax')(normalize2)
+    preds = Dense(4, activation='softmax')(concat)
 
     fake_nn = Model([headline_input, body_input, global_vector_input], outputs=preds)
     print(fake_nn.summary())
@@ -313,13 +313,13 @@ def bi_feature_tf_idf(headline_body_vec, headline_length, body_length, embedding
 
     headline_input = Input(shape=(headline_length,), dtype='int32')
     headline_embedding = headline_embedding_layer(headline_input)
-    headline_nor = BatchNormalization()(headline_embedding)
-    head_bi_dir = Bidirectional(LSTM(cells))(headline_nor)
+    #headline_nor = BatchNormalization()(headline_embedding)
+    head_bi_dir = Bidirectional(LSTM(cells))(headline_embedding)
 
     body_input = Input(shape=(body_length,), dtype='int32')
     body_embedding = bodies_embedding_layer(body_input)
-    body_nor = BatchNormalization()(body_embedding)
-    body_bi_dir = Bidirectional(LSTM(cells))(body_nor)
+    #body_nor = BatchNormalization()(body_embedding)
+    body_bi_dir = Bidirectional(LSTM(cells))(body_embedding)
 
     headline_body_vec_input = Input(shape=(headline_body_vec,), dtype='float32')
 
@@ -331,9 +331,9 @@ def bi_feature_tf_idf(headline_body_vec, headline_length, body_length, embedding
     #dropout1 = Dropout(drop_out)(dense2)
     #dense3 = Dense(numb_layers, activation=activation)(dropout1)
     #dropout2 = Dropout(drop_out)(dense3)
-    normalize2 = BatchNormalization()(concat)
+    #normalize2 = BatchNormalization()(concat)
 
-    preds = Dense(4, activation='softmax')(normalize2)
+    preds = Dense(4, activation='softmax')(concat)
 
     fake_nn = Model([headline_input, body_input, headline_body_vec_input], outputs=preds)
     print(fake_nn.summary())
